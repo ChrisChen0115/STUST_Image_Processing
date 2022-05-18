@@ -2,7 +2,7 @@
 ---
 ## 作業3：影像處理程式開發平台3
 ### 新增功能 : 開啟視訊鏡頭，並放入QLabel物件
-### 預計新增功能 : 人臉偵測 : 利用別人做好的模型來實作。
+### 預計新增功能 : 人臉偵測 : 利用別人做好的模型(.xml)來實作。
     https://github.com/opencv/opencv/tree/master/data/haarcascades
 ## 已有功能:
 ### 基礎功能
