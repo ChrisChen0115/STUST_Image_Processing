@@ -5,6 +5,9 @@
 ### 預計新增功能 : 人臉偵測 : 利用別人做好的模型 Haar Cascade 或 dlib 來實作
     https://github.com/opencv/opencv/tree/master/data/haarcascades
     http://dlib.net/
+## 使用套件:
+* OpenCV
+* Qt
 ## 已有功能:
 ### 基礎功能
 * 開啟圖檔
