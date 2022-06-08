@@ -4,9 +4,18 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
 
-using namespace cv;
+#include <dlib/opencv.h>
+#include <dlib/image_processing/frontal_face_detector.h>
+#include <dlib/image_processing/render_face_detections.h>
+#include <dlib/image_processing.h>
+#include <dlib/gui_widgets.h>
+#include <dlib/image_io.h>
+
 using namespace std;
+using namespace cv;
+using namespace dlib;
 
 QtWidgetsApplication1::QtWidgetsApplication1(QWidget* parent)
 	: QMainWindow(parent)
@@ -108,7 +117,7 @@ void QtWidgetsApplication1::histogram() {
 		float binValue = dstHist.at<float>(i);
 
 		int realValue = saturate_cast<int>(binValue * hpt / maxValue);
-		line(dstImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
+		cv::line(dstImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
 	}
 	imshow("Result", dstImage);
 	waitKey(0);
@@ -178,7 +187,7 @@ void QtWidgetsApplication1::QequalizeHist() {
 		float binValue = dstHist.at<float>(i);//hist類別為float 
 		//拉伸到0-max
 		int realValue = saturate_cast<int>(binValue * hpt / dstMaxValue);
-		line(dstHistImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
+		cv::line(dstHistImage, Point(i, size - 1), Point(i, size - realValue), Scalar(255));
 	}
 	imshow("Original Image", Gray_image);
 	imshow("直方圖等化", result);
@@ -205,17 +214,6 @@ void QtWidgetsApplication1::QmedianBlur() {
 	medianBlur(src, dst, 7);
 	imshow("Oringin", src);
 	imshow("MedianBlur", dst);
-	waitKey(0);
-	destroyAllWindows();
-}
-
-//雙邊平滑
-void QtWidgetsApplication1::QbilateralFilter() {
-	Mat src = QImage2cvMat(ui.label_Image->pixmap()->toImage());
-	Mat dst;
-	bilateralFilter(src, dst, 9, 75, 75, BORDER_DEFAULT);
-	imshow("Oringin", src);
-	imshow("BilateralFilter", dst);
 	waitKey(0);
 	destroyAllWindows();
 }
@@ -343,7 +341,8 @@ void QtWidgetsApplication1::QperspectiveTransform() {
 }
 
 //Mat轉QImage
-QImage cvMat2QImage(const Mat& mat) {
+QImage cvMat2QImage(const Mat& mat)
+{
 	{
 		if (mat.type() == CV_8UC1)                          // 單通道
 		{
@@ -381,23 +380,84 @@ QImage cvMat2QImage(const Mat& mat) {
 	}
 }
 
+// 計算眼睛縱橫比
+double compute_EAR(std::vector<cv::Point> vec)
+{
+	// 取得兩個向量間的距離並取絕對值
+	double a = cv::norm(cv::Mat(vec[1]), cv::Mat(vec[5]));
+	double b = cv::norm(cv::Mat(vec[2]), cv::Mat(vec[4]));
+	double c = cv::norm(cv::Mat(vec[0]), cv::Mat(vec[3]));
+	// 帶入眼睛縱橫比公式
+	double ear = (a + b) / (2.0 * c);
+	return ear;
+}
+
 //開啟鏡頭
-void QtWidgetsApplication1::openCap() {
+void QtWidgetsApplication1::openCap()
+{
+	image_window win;
+	shape_predictor sp;
+	std::vector<cv::Point> righteye;
+	std::vector<cv::Point> lefteye;
+	char c;
+	cv::Point p;
+
 	VideoCapture cap(0);
-	Mat frame;
-	while (true) {
-		// 擷取影像
-		cap >> frame;
-		//在QLabel上顯示視訊畫面
-		QImage img = cvMat2QImage(frame);
-		ui.label_Image->setPixmap(QPixmap::fromImage(img));
-		imshow("cap", frame);
-		//按下esc離開
-		if (waitKey(1) == 27) {
-			destroyAllWindows();
+	cap.set(CAP_PROP_BUFFERSIZE, 3);
+	cap.set(CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'));
+	cap.set(CAP_PROP_FRAME_WIDTH, 640); // 解析度越小，處理速度越快
+	cap.set(CAP_PROP_FRAME_HEIGHT, 480);
+
+	// 載入模組
+	frontal_face_detector detector = get_frontal_face_detector();
+	deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
+
+	// 開啟視訊鏡頭直到使用者關閉視窗
+	while (!win.is_closed()) {
+		// 讀取視訊鏡頭
+		cv::Mat temp;
+		if (!cap.read(temp)) {
 			break;
+		}
+
+		cv_image<bgr_pixel> cimg(temp);
+		full_object_detection shape;
+
+		// 臉部偵測
+		std::vector<dlib::rectangle> face = detector(cimg);
+
+		win.clear_overlay();
+		win.set_image(cimg);
+
+		if (face.size() > 0) {
+			// 清除上次儲存結果
+			righteye.clear();
+			lefteye.clear();
+
+			shape = sp(cimg, face[0]);
+			// 右眼, 座標為36~41
+			for (int b = 36; b < 42; ++b) {
+				p.x = shape.part(b).x();
+				p.y = shape.part(b).y();
+				lefteye.push_back(p);
+			}
+			// 左眼, 座標為42~47
+			for (int b = 42; b < 48; ++b) {
+				p.x = shape.part(b).x();
+				p.y = shape.part(b).y();
+				righteye.push_back(p);
+			}
+			// 計算左、右眼縱橫比
+			double left_ear = compute_EAR(lefteye);
+			double right_ear = compute_EAR(righteye);
+
+			// 計算出來的值小於0.25則判定為睡著
+			if ((right_ear + left_ear) / 2 < 0.25)
+				win.add_overlay(dlib::image_window::overlay_rect(face[0], rgb_pixel(255, 255, 255), "Sleeping"));
+			else
+				win.add_overlay(dlib::image_window::overlay_rect(face[0], rgb_pixel(255, 255, 255), "Not sleeping"));
+			win.add_overlay(render_face_detections(shape));
 		}
 	}
 	cap.release();
-	ui.label_Image->clear();
 }

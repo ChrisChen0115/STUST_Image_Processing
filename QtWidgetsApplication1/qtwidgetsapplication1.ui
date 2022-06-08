@@ -314,7 +314,7 @@
       <x>420</x>
       <y>10</y>
       <width>111</width>
-      <height>111</height>
+      <height>81</height>
      </rect>
     </property>
     <property name="title">
@@ -344,19 +344,6 @@
      </property>
      <property name="text">
       <string>MedianBlur</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="bilateralFilter_Btn">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>93</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>BilateralFilter</string>
      </property>
     </widget>
    </widget>
@@ -688,7 +675,7 @@
    <widget class="QPushButton" name="openCapBtn">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>150</x>
       <y>440</y>
       <width>93</width>
       <height>28</height>
@@ -869,22 +856,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>bilateralFilter_Btn</sender>
-   <signal>clicked()</signal>
-   <receiver>QtWidgetsApplication1Class</receiver>
-   <slot>QbilateralFilter()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>786</x>
-     <y>473</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>426</x>
-     <y>313</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>warpAffine_Btn</sender>
    <signal>clicked()</signal>
    <receiver>QtWidgetsApplication1Class</receiver>
@@ -975,7 +946,6 @@
   <slot>change2HSV()</slot>
   <slot>QgaussianBlur()</slot>
   <slot>QmedianBlur()</slot>
-  <slot>QbilateralFilter()</slot>
   <slot>QwarpAffine()</slot>
   <slot>Qrotate()</slot>
   <slot>QaffineTransform()</slot>

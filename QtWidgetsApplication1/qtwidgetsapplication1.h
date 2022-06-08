@@ -33,13 +33,13 @@ public:
 		}
 		return mat;
 	}
-	
+
 
 protected:
 	void mousePressEvent(QMouseEvent* event);
 private:
 	Ui::QtWidgetsApplication1Class ui;
-
+	
 private slots:
 	void openFile();
 	void ROI();
@@ -50,7 +50,6 @@ private slots:
 	void change2HSV();
 	void QgaussianBlur();
 	void QmedianBlur();
-	void QbilateralFilter();
 	void QwarpAffine();
 	void Qrotate();
 	void QaffineTransform();
