@@ -31,12 +31,15 @@
     1. 打開Visual Studio
     2. 上方工具列->工具->Nuget套件管理員->套件管理器主控台
     3. 輸入上方指令, 即可安裝完dlib
-### 成果展示
+## 成果展示
 **not sleeping**
+
 ![圖示](result1.png)
 
 **sleeping**
+
 ![圖示](result2.png)
+## 現有功能
 ### 基礎功能
 * 開啟圖檔
 * ROI
@@ -55,3 +58,11 @@
 * 旋轉
 * 仿射轉換
 * 透視投影轉換
+### 睡意偵測
+## References
+Realtime Driver Drowsiness Detection
+
+    http://emaraic.com/blog/realtime-sleep-detection
+OpenCV - Norm() function
+
+    https://docs.opencv.org/3.4/d2/de8/group__core__array.html#ga55a581f0accd8d990af775d378e7e46c
