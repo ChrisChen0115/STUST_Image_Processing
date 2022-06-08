@@ -6,6 +6,7 @@
 * Qt : https://www.qt.io/
 * OpenCV : https://opencv.org/
 * dlib : http://dlib.net/
+* 68個特徵點人臉偵測模型 : shape_predictor_68_face_landmarks.dat
 ## 前置作業: 安裝dlib(OpenCV同理)
 1. 下載git
 ```
