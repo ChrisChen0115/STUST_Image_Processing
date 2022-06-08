@@ -27,10 +27,15 @@
 ```
     vcpkg integrate project
 ```
-7. 之後會產生一段指令 : Install-Package vcpkg.D.vcpkg -Source "D:\vcpkg\scripts\buildsystems"
-    1. 打開Visual Studio
-    2. 上方工具列->工具->Nuget套件管理員->套件管理器主控台
-    3. 輸入上方指令, 即可安裝完dlib
+7. 之後會產生一段指令
+```
+Install-Package vcpkg.D.vcpkg -Source "D:\vcpkg\scripts\buildsystems"
+```
+step1 : 打開Visual Studio
+
+step2 : 上方工具列->工具->Nuget套件管理員->套件管理器主控台
+
+step3 : 輸入上方指令, 即可安裝完dlib
 ## 成果展示
 **not sleeping**
 
