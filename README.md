@@ -77,4 +77,5 @@ OpenCV - Norm() function
     https://docs.opencv.org/3.4/d2/de8/group__core__array.html#ga55a581f0accd8d990af775d378e7e46c
 Class - dlib.image_window
 
+    https://vimsky.com/zh-tw/examples/detail/python-method-dlib.image_window.html
     http://dlib.net/python/index.html#dlib_pybind11.image_window
