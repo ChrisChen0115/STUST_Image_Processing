@@ -69,6 +69,9 @@ step3 : 輸入上方指令, 即可安裝完dlib
 Realtime Driver Drowsiness Detection
 
     http://emaraic.com/blog/realtime-sleep-detection
+基于opencv和shape_predictor_68_face_landmarks.dat的人脸识别监测
+
+    https://blog.csdn.net/monster663/article/details/118341515
 OpenCV - Norm() function
 
     https://docs.opencv.org/3.4/d2/de8/group__core__array.html#ga55a581f0accd8d990af775d378e7e46c
